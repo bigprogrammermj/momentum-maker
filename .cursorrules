@@ -1,0 +1,318 @@
+# Instructions
+
+During your interaction with the user, if you find anything reusable in this project (e.g. version of a library, model name), especially about a fix to a mistake you made or a correction you received, you should take note in the `Lessons` section in the `.cursorrules` file so you will not make the same mistake again. 
+
+You should also use the `.cursorrules` file as a Scratchpad to organize your thoughts. Especially when you receive a new task, you should first review the content of the Scratchpad, clear old different task if necessary, first explain the task, and plan the steps you need to take to complete the task. You can use todo markers to indicate the progress, e.g.
+[X] Task 1
+[ ] Task 2
+
+Also update the progress of the task in the Scratchpad when you finish a subtask.
+Especially when you finished a milestone, it will help to improve your depth of task accomplishment to use the Scratchpad to reflect and plan.
+The goal is to help you maintain a big picture as well as the progress of the task. Always refer to the Scratchpad when you plan the next step.
+
+IMPORTANT: These instructions apply to EVERY new composer session. You must proactively:
+1. Review and maintain the Lessons section with new learnings
+2. Update the Scratchpad with current progress
+3. Keep documentation structure consistent
+4. Do this without being explicitly asked
+
+IMPORTANT: For better task management and cleaner development:
+1. Each new task or significant step should be handled in a new composer session
+2. Proactively suggest starting a new composer session when appropriate
+3. Explain why a new session would be beneficial in that specific case
+4. Keep track of and reference the current task's progress across sessions
+
+# Tools
+
+Note all the tools are in python3. So in the case you need to do batch processing, you can always consult the python files and write your own script.
+
+[NOTE TO CURSOR: Since no API key is configured, please ignore both the Screenshot Verification and LLM sections below.]
+[NOTE TO USER: If you have configured or plan to configure an API key in the future, simply delete these two notice lines to enable these features.]
+
+## Screenshot Verification
+
+The screenshot verification workflow allows you to capture screenshots of web pages and verify their appearance using LLMs. The following tools are available:
+
+1. Screenshot Capture:
+```bash
+venv/bin/python3 tools/screenshot_utils.py URL [--output OUTPUT] [--width WIDTH] [--height HEIGHT]
+```
+
+2. LLM Verification with Images:
+```bash
+venv/bin/python3 tools/llm_api.py --prompt "Your verification question" --provider {openai|anthropic} --image path/to/screenshot.png
+```
+
+Example workflow:
+```python
+from screenshot_utils import take_screenshot_sync
+from llm_api import query_llm
+
+# Take a screenshot
+
+screenshot_path = take_screenshot_sync('https://example.com', 'screenshot.png')
+
+# Verify with LLM
+
+response = query_llm(
+    "What is the background color and title of this webpage?",
+    provider="openai",  # or "anthropic"
+    image_path=screenshot_path
+)
+print(response)
+```
+
+## LLM
+
+You always have an LLM at your side to help you with the task. For simple tasks, you could invoke the LLM by running the following command:
+```bash
+venv/bin/python3 ./tools/llm_api.py --prompt "What is the capital of France?" --provider "anthropic"
+```
+
+The LLM API supports multiple providers:
+- OpenAI (default, model: gpt-4o)
+- Azure OpenAI (model: configured via AZURE_OPENAI_MODEL_DEPLOYMENT in .env file, defaults to gpt-4o-ms)
+- DeepSeek (model: deepseek-chat)
+- Anthropic (model: claude-3-sonnet-20240229)
+- Gemini (model: gemini-pro)
+- Local LLM (model: Qwen/Qwen2.5-32B-Instruct-AWQ)
+
+But usually it's a better idea to check the content of the file and use the APIs in the `tools/llm_api.py` file to invoke the LLM if needed.
+
+## Web browser
+
+You could use the `tools/web_scraper.py` file to scrape the web.
+```bash
+venv/bin/python3 ./tools/web_scraper.py --max-concurrent 3 URL1 URL2 URL3
+```
+This will output the content of the web pages.
+
+## Search engine
+
+You could use the `tools/search_engine.py` file to search the web.
+```bash
+venv/bin/python3 ./tools/search_engine.py "your search keywords"
+```
+This will output the search results in the following format:
+```
+URL: https://example.com
+Title: This is the title of the search result
+Snippet: This is a snippet of the search result
+```
+If needed, you can further use the `web_scraper.py` file to scrape the web page content.
+
+# Lessons
+
+## User Specified Lessons
+
+- You have a python3 venv in ./venv. Use it.
+- Include info useful for debugging in the program output.
+- Read the file before you try to edit it.
+- Due to Cursor's limit, when you use `git` and `gh` and need to submit a multiline commit message, first write the message in a file, and then use `git commit -F <filename>` or similar command to commit. And then remove the file. Include "[Cursor] " in the commit message and PR title.
+
+## React Native Best Practices
+
+- Bei asynchronen Operationen wie E-Mail-Versand:
+  - Nicht die UI blockieren - Operationen im Hintergrund ausführen
+  - State-Updates vor der asynchronen Operation setzen
+  - Fehlerbehandlung mit try-catch implementieren
+
+- Komponenten-Lifecycle Management:
+  - `useRef` für Werte, die Rerenders nicht triggern sollen
+  - `isMounted` Ref zur Vermeidung von Updates nach Unmount
+  - Cleanup-Funktionen in useEffect implementieren
+  - Timer und Animationen immer sauber aufräumen
+
+- Navigation und State:
+  - Navigation-Events von State-Updates trennen
+  - Race Conditions durch Status-Flags vermeiden
+  - Mehrfache Navigationen verhindern
+  - State-Updates vor Navigation ausführen
+  - Keine Node.js-spezifischen Module wie 'events' verwenden - stattdessen React Native-kompatible Alternativen implementieren
+
+- Performance Optimierung:
+  - Callbacks mit useCallback memoizieren
+  - Unnötige Re-Renders vermeiden
+  - Timeouts und Intervalle sauber aufräumen
+  - Animationen bei Unmount stoppen
+
+## Cursor learned
+
+- For search results, ensure proper handling of different character encodings (UTF-8) for international queries
+- Add debug information to stderr while keeping the main output clean in stdout for better pipeline integration
+- When using seaborn styles in matplotlib, use 'seaborn-v0_8' instead of 'seaborn' as the style name due to recent seaborn version changes
+- Use 'gpt-4o' as the model name for OpenAI's GPT-4 with vision capabilities
+- When running Python scripts in PowerShell that have console interaction, it's better to create a batch script wrapper to avoid PowerShell console buffer issues
+- In Python projects, stick to one virtual environment naming convention (either 'venv' or '.venv') to avoid confusion and redundancy
+- When using PowerShell, use 'Remove-Item -Recurse -Force' instead of Unix-style 'rm -rf' for directory removal
+- Bei Windows PowerShell keine verketteten Befehle mit '&&' verwenden - stattdessen separate Befehle oder Batch-Datei nutzen:
+  - FALSCH: `cd verzeichnis && npm start`
+  - RICHTIG: Entweder separate Befehle oder start.bat erstellen:
+    ```batch
+    @echo off
+    cd /d "%~dp0"
+    npm start
+    ```
+- Bei Expo-Projekten in Windows PowerShell kann es zu Problemen mit dem Arbeitsverzeichnis kommen. Eine start.bat im Projektverzeichnis mit `cd /d "%~dp0"` löst das Problem elegant
+- Expo Go Server sollte immer aus dem Verzeichnis gestartet werden, in dem sich die package.json befindet
+- Wenn der Port 8081 bereits belegt ist, akzeptiert Expo automatisch einen alternativen Port (z.B. 8083)
+- Versionskonflikte bei React Native Paketen sollten beachtet werden:
+  - @react-native-async-storage/async-storage
+  - react-native-gesture-handler
+  - react-native-safe-area-context
+  - react-native-screens
+- Ab React Native 0.77 werden JavaScript-Logs aus Metro entfernt - React Native DevTools sollten stattdessen verwendet werden
+- Expo Go hat wichtige Einschränkungen die beachtet werden müssen:
+  - Push-Notifications sind eingeschränkt - Development Build nötig
+  - Neue React Native Architektur ist immer aktiviert
+  - Bei Produktionsversion "newArchEnabled: true" in app.json setzen
+  - Für volle Funktionalität Development Build verwenden
+- Weniger ist mehr: Ein einzelner, klarer Schalter ist besser als mehrere redundante Kontrollen
+- UI-Feedback sollte konsistent sein: Wenn die App auf Englisch ist, sollten alle Statusmeldungen auf Englisch sein
+- Warnungen sollten durch Design kommuniziert werden (z.B. rote Farbe) statt durch explizite Texte
+- Bei React Native/Expo Projekten sollte die Farbpalette in Variablen ausgelagert werden für bessere Wartbarkeit
+- Der DSEG7Classic-Regular Font eignet sich hervorragend für digitale Zeitanzeigen
+- AsyncStorage Operationen sollten immer in try-catch Blöcken ausgeführt werden
+- Bei React Native sollten Styles für bessere Performance außerhalb der Render-Funktion definiert werden
+- Opacity-Änderungen (z.B. bei Icons) sind ein subtiler aber effektiver Weg, Status zu kommunizieren
+
+- Dokumentationsstruktur konsistent halten:
+  - Keine doppelten Sektionen erstellen
+  - Neue Erkenntnisse in bestehende Kategorien einordnen
+  - Klare Hierarchie beibehalten
+
+- Einem gut durchdachten initialen Plan sollte gefolgt werden:
+  - Phasenweise Entwicklung ist systematischer als feature-getriebene Entwicklung
+  - Grundstruktur vor Funktionalität verhindert spätere Umstrukturierungen
+  - UI/UX-Konsistenz wird durch strukturierte Entwicklung gewährleistet
+  
+- Vorschnelle Planänderungen vermeiden:
+  - Auch wenn eine Funktionalität "wichtig" erscheint, sollte die Grundstruktur Priorität haben
+  - Die Versuchung, "schnell" wichtige Features zu implementieren, kann zu technischen Schulden führen
+  - Ein systematischer Ansatz spart langfristig Zeit
+
+- Dokumentation und Planung:
+  - Das Scratchpad hilft, den Überblick zu behalten
+  - Regelmäßige Überprüfung des Plans verhindert Abweichungen
+  - Änderungen am Plan sollten gut begründet und dokumentiert sein
+
+# Scratchpad
+
+## Aktuelle Aufgabe: Momentum Maker - "No Escape" Wecker App mit Expo Go und Backend-Server
+Status: MVP-Entwicklung - Lokaler Prototyp
+
+### Kernkonzept
+Ein kompromissloser Wecker, der durch negative Verstärkung (peinliche E-Mail) das Aufstehen erzwingt.
+- Keine Snooze-Funktion
+- Quiz als "Beweis" des Wachzustands
+- Automatischer E-Mail-Versand als unausweichliche Konsequenz
+- Zeitkritische Komponente (1min Timer)
+
+### Erreichte Meilensteine
+[X] Expo Go Setup und Konfiguration
+[X] Entwicklungsumgebung
+[X] MainScreen UI optimiert
+[X] Backend-Server (lokal)
+[X] E-Mail-Integration in App
+[X] Quiz-System mit Timer und E-Mail-Versand
+
+### Aktualisierter MVP-Plan
+
+1. Phase 1: Grundstruktur ✓
+   [X] MainScreen optimiert
+   [X] SettingsScreen mit E-Mail-Konfiguration
+   [X] QuizScreen Basis
+   [X] TimeSelectionScreen
+   [X] ResultScreen
+   [X] Navigation und Routing
+
+2. Phase 2: Backend & E-Mail ✓
+   [X] Express-Server (lokal)
+   [X] SMTP-Integration
+   [X] E-Mail-Versand-Endpoint
+   [X] Verbindungstest implementiert
+
+3. Phase 3: Wecker-Logik ✓
+   [X] Alarm-Sound (expo-av)
+   [X] Lokale Benachrichtigungen
+   [X] Wecker-Aktivierungslogik
+   [X] Quiz-Aktivierung bei Alarm
+   [X] Deaktivierungssperre
+
+4. Phase 4: Quiz-System ✓
+   [X] Erweitertes Fragen-Set implementiert
+   [X] Timer-Logik:
+     [X] 60-Sekunden Zeitlimit
+     [X] Automatischer Reset bei falscher Antwort
+   [X] E-Mail-Versand bei Versagen (mit Duplikat-Schutz)
+   [X] Verbessertes Feedback durch UI-Anzeigen
+
+5. Phase 5: Lokaler MVP-Test ⚡(AKTUELLE PHASE)
+   [ ] Umfassende Tests:
+     [ ] Wecker-Aktivierung
+     [ ] Quiz-Durchlauf
+     [ ] E-Mail-Versand
+     [ ] Timer-Funktionalität
+   [ ] Edge Cases:
+     [ ] App im Hintergrund
+     [ ] Netzwerkprobleme
+     [ ] Gerät neu gestartet
+   [ ] UX-Optimierungen:
+     [ ] Feedback-Verbesserungen
+     [ ] Fehlermeldungen
+     [ ] Ladezeiten
+   [ ] Performance-Tests:
+     [ ] Memory Leaks
+     [ ] CPU-Auslastung
+     [ ] Batterieverbrauch
+   [ ] Dokumentation:
+     [ ] Benutzerhandbuch
+     [ ] Technische Dokumentation
+     [ ] Known Issues
+
+6. Phase 6: Produktionsvorbereitungen
+   [ ] Development Build erstellen für volle Notifications-Unterstützung
+   [ ] Server-Deployment (Vercel/Heroku)
+   [ ] Produktions-URL in App
+   [ ] SSL/HTTPS-Konfiguration
+   [ ] Monitoring Setup
+   [ ] Finale Sicherheitsprüfung
+   [ ] "newArchEnabled: true" in app.json setzen
+
+### Nächste Schritte (Phase 5)
+1. Testplan erstellen:
+   - Testfälle definieren
+   - Testumgebung vorbereiten
+   - Testdaten erstellen
+
+2. Edge Cases identifizieren:
+   - Kritische Szenarien dokumentieren
+   - Fehlerbehandlung überprüfen
+   - Netzwerkprobleme simulieren
+
+3. Performance-Monitoring einrichten:
+   - Metriken definieren
+   - Monitoring-Tools auswählen
+   - Baseline-Messungen durchführen
+
+4. Dokumentation vorbereiten:
+   - Struktur festlegen
+   - Screenshots erstellen
+   - Anleitungen schreiben
+
+### Technische Komponenten
+- Frontend: React Native mit Expo
+- Backend: Express.js (lokal)
+- E-Mail: Nodemailer mit GMX
+- Datenbank: Nicht erforderlich für MVP
+- Hosting: Lokal für Entwicklung, Vercel/Heroku für Produktion
+
+### Entwickler-Befehle
+Frontend:
+- `npm start` - Expo Server starten
+- `npm run devtools` - React DevTools öffnen
+
+Backend:
+- `npm run dev` - Entwicklungsserver starten
+- `npm start` - Produktionsserver starten
+- `npm run build` - TypeScript kompilieren
