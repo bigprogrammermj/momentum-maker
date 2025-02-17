@@ -316,3 +316,97 @@ Backend:
 - `npm run dev` - Entwicklungsserver starten
 - `npm start` - Produktionsserver starten
 - `npm run build` - TypeScript kompilieren
+
+# Cursor Rules Configuration
+
+# WICHTIG: PROJEKT INITIALISIERUNG
+init_instructions:
+  title: "Momentum Maker - Erste Schritte"
+  steps:
+    1. NICHT in Cursor starten! Zuerst:
+       ```
+       1. Laden Sie init.bat herunter
+       2. Führen Sie init.bat aus
+       3. Geben Sie einen Projektnamen ein
+       4. Öffnen Sie den NEUEN Ordner in Cursor
+       ```
+    2. Dann in Cursor:
+       ```
+       1. Führen Sie setup.bat aus
+       2. Warten Sie bis Setup fertig ist
+       3. Starten Sie Backend und Mobile App
+       ```
+
+# Project Structure
+project_root:
+  - momentum-maker-mobile/    # React Native / Expo App
+  - momentum-maker-backend/   # Express.js Backend
+  - tools/                    # Entwicklungstools
+    - web_scraper.py         # Web Scraping
+    - search_engine.py       # Websuche
+  - venv/                    # Python Virtual Environment
+  - .env                     # Umgebungsvariablen
+  - init.bat                # Erste Initialisierung
+  - setup.bat               # Automatisches Setup
+  - verify_setup.py         # Setup-Verifikation
+
+# Features & Tools
+available_tools:
+  - web_scraping:     true   # Webscraping aktiviert
+  - web_search:       true   # Websuche aktiviert
+  - llm_integration:  false  # LLM deaktiviert (nicht benötigt)
+  - screenshot:       false  # Screenshots deaktiviert
+
+# Agent Instructions
+agent_behavior:
+  on_new_session:
+    1. Prüfe ob Projekt korrekt initialisiert wurde
+    2. Wenn nicht: Zeige init_instructions
+    3. Wenn ja: Fahre mit Setup fort
+    4. Aktiviere verfügbare Tools
+
+  on_error:
+    1. Zeige init_instructions wenn nicht initialisiert
+    2. Führe verify_setup.py aus wenn initialisiert
+    3. Biete Neuinstallation an
+
+# Development Environment
+dev_environment:
+  python_venv: true
+  node_version: ">=14"
+  tools_required:
+    - python3
+    - node
+    - npm
+
+# Lessons & Best Practices
+lessons:
+  - "IMMER erst init.bat, dann setup.bat ausführen"
+  - "Niemals direkt in Cursor starten"
+  - "Projekt muss in neuem Ordner initialisiert werden"
+  - "Virtual Environment wird automatisch erstellt"
+  - "Sensitive Daten in .env (sicher in privatem Repository)"
+
+# Scratchpad
+## Aktuelle Aufgabe: Idiotensichere Projektinitialisierung
+Status: Verbesserte Einrichtung
+
+### Setup-Schritte
+[X] init.bat erstellt für Erstinitialisierung
+[X] setup.bat für automatische Einrichtung
+[X] Verifikations-Skript implementiert
+[X] Klare Anweisungen in .cursorrules
+[ ] Testen der verbesserten Installation
+
+### Nächste Schritte
+1. Repository aktualisieren:
+   - init.bat hochladen
+   - .cursorrules aktualisiert
+   - Dokumentation angepasst
+
+2. Testplan:
+   - Neuen Ordner erstellen
+   - init.bat ausführen
+   - In Cursor öffnen
+   - setup.bat ausführen
+   - Funktionalität verifizieren
